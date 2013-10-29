@@ -1,0 +1,54 @@
+<div ng-mousemove="broadcastMousePosition($event)" id='main_container' ng-class="{neon: data.neonMode}">
+	<span ng-show="data.userOptionsListIsExpanded" class="toggle-list-arrow" ng-click="toggleUserOptionsList(false)">&#10094;</span>
+	<span ng-hide="data.userOptionsListIsExpanded" class="toggle-list-arrow" ng-click="toggleUserOptionsList(true)">&#10095; options</span>
+	<ul class="user-options-list" ng-class="{expanded: data.userOptionsListIsExpanded}" ng-click="data.userOptionsListIsExpanded = true">
+		<li class="instructions">
+			<p class="instruction">1) WRITE A MESSAGE</p>
+			<p class="instruction">2) MOVE YOUR MOUSE</p>
+			<p class="instruction">3) TWEAK THE SETTINGS</p>
+			<p class="instruction">4) SHARE THE LINK</p>
+		</li>
+		<textarea ng-model="data.mainText" type="text" autofocus class="user-option text-input" on-keyup="updateTextParam()" placeholder="Write yourself a message."></textarea>
+		<span ng-hide="data.neonMode">
+			<li class="user-option">
+				NUMBER OF LAYERS: {{data.numberOfLayers}}
+				<input class="range" type="range" min="1" max="10" ng-model="data.numberOfLayers">
+			</li>
+			<li class="user-option">
+				MOUSE SENSITIVITY: {{data.movementSensitivity}}
+				<input class="range" type="range" min="1" max="{{MOVEMENT_SENSITIVITY_MAX - 1}}" ng-model="data.movementSensitivity">
+			</li>
+		</span>
+		<li class="user-option">
+			ZOOM: {{data.titleFontSize}}
+			<input class="range" type="range" min="20" max="300" ng-model="data.titleFontSize">
+		</li>
+		<li ng-click="toggleNeonMode()" class="user-option neon-toggle" ng-class="{enabled: data.neonMode}">NEON MODE</li>
+		<li class="user-option"ng-click="resetDefaults()">RESET</li>
+	</ul>
+	<div class="right-options">
+		<div class="right-option" ng-show="shortenedUrl">
+			<label for="share_url_input" class="share-url-label">YOUR MESSAGE LINK:</label>
+			<input type="text" id="share_url_input" select-on-click value="{{shortenedUrl}}"/>
+			<span ng-click="shortenedUrl = null">&times;</span>
+		</div>
+		<a href="#" ng-hide="shortenedUrl" class="right-option" ng-click="clickShorten()">SHARE THIS MESSAGE</a>
+		<a href="#" class="right-option about-prompt" ng-click="aboutModalOpen = true">?</a>
+	</div>
+	<pre class="text-container" ng-style="textContainerStyle" ng-class="{navOpen: data.userOptionsListIsExpanded}">
+		<h1 class="centered-title" id="main_title" style="font-size:{{data.titleFontSize}}px;" ng-class="{neon: data.neonMode}"><span change-height="changeTitleOffset(height)">{{data.mainText}}</span></h1>
+		<span ng-if="!data.neonMode">
+			<span ng-repeat="i in [] | range:[0, data.numberOfLayers]">
+				<h1 class="centered-title" gf-title-style denominator="getSensitivityDenominator()" index="{{$index}}"><span style="font-size:{{data.titleFontSize}}px;">{{data.mainText}}</span></h1>
+			</span>
+		</span>
+	</pre>
+</div>
+<div ng-show="aboutModalOpen">
+	<div class="modal-backdrop" ng-click="aboutModalOpen = false"></div>
+	<div class="modal-body">
+		<h3 class="modal-title">ABOUT THIS SITE</h3>
+		<p class="modal-content">This page was built and designed by Gabe Flateman in October 2013, for Cassie's birthday.</p>
+		<span class="x-out" ng-click="aboutModalOpen = false">&times;</span>
+	</div>
+</div>
